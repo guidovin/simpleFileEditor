@@ -1,5 +1,5 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-Built and used with npm 6.14.5 and node 12.18.2.
+Built with npm 6.14.5 and node 12.18.2.
 
 
 To run the project, from it's directory, you must install npm packages and either server the production build or run npm start
