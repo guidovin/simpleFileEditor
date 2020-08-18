@@ -7,11 +7,12 @@ import { getFileTree, saveFile, deleteFile } from "./serverComunicationUtils";
 
 const classes = {
   root: {
-    display: "flex"
+    display: "flex",
+    flexWrap: "wrap"
   },
 
   fileViewerWrapper: {
-    flexGrow: 1
+    flexGrow: 2,
   }
 }
 

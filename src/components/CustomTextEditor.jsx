@@ -38,19 +38,31 @@ const customEditorClasses = {
   editorBody:{
     overflow:"auto",
     height:"inherit",
-    fontSize: "calc(6px + 1vw)"
+    fontSize: "calc(6px + 1vw)",
+    paddingLeft: "5px"
   },
   documentTitle: {
     marginLeft:"20px",
     marginRight:"20px",
     display:"flex",
     alignItems:"center",
-    fontSize: "calc(6px + 1vw)"
+    fontSize: "calc(6px + 1vw)",
+    color:"white"
   },
   deletionSwitch: {
     marginLeft: "auto" 
+  },
+  toolbar: {
+    border: "1px solid #5a5d5f"
   }
 };
+
+const toolbar = {
+  options: ['inline', 'blockType', 'fontSize', 'fontFamily', "history", "list", "textAlign"],
+  inline: {
+    options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace'],
+  },
+}
 
 class CustomTextEditor extends React.Component {
   constructor(props) {
@@ -94,6 +106,8 @@ class CustomTextEditor extends React.Component {
   render() {
     const { editorState } = this.state;
     const { classes, file } = this.props;
+    const toggleClientSideDeletionTooltip = 
+      "toggles client-side deletion to simulate back-end deletion, still calls deletion API but triggers re-render of fileTree on file deletion";
     return (
       <div id="textEditorRoot" className={classes.root}>
         <div id="editorHeader" className={classes.header} >
@@ -104,7 +118,7 @@ class CustomTextEditor extends React.Component {
             <Delete/>
           </Button>
           {file && <span className={classes.documentTitle}>{file.name}</span>}
-          <Tooltip title="toggles client-side deletion to simulate back-end deletion, still calls deletion API but triggers re-render of fileTree on file deletion">
+          <Tooltip title={toggleClientSideDeletionTooltip}>
             <Switch
               classes={{ root: classes.deletionSwitch }}
               checked={this.props.clientSideDeletion}
@@ -116,10 +130,12 @@ class CustomTextEditor extends React.Component {
         </div>
         <div id="editorWrapper" >
           <Editor
+            toolbarClassName={classes.toolbar}
             editorClassName={classes.editorBody}
             wrapperClassName={classes.editorWrapper}
             editorState={editorState}
             onEditorStateChange={(editorState) => {this.onEditorStateChange(editorState)}}
+            toolbar={toolbar}
           />
         </div>
       </div>
