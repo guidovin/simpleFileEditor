@@ -53,7 +53,7 @@ const customEditorClasses = {
     marginLeft: "auto" 
   },
   toolbar: {
-    border: "1px solid #5a5d5f"
+    border: "1px solid #5a5d5f",
   }
 };
 

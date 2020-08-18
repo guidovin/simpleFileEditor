@@ -16,7 +16,8 @@ const fileTreeClasses = {
   fileTreeWrapper: {
     flexGrow:6,
     padding: "15px 15px",
-    overflow: "auto"
+    overflow: "auto",
+    flexBasis: "20vw"
   },
 }
 

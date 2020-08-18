@@ -12,7 +12,8 @@ const classes = {
   },
 
   fileViewerWrapper: {
-    flexGrow: 2,
+    flexGrow:1,
+    flexBasis:"75vw"
   }
 }
 
