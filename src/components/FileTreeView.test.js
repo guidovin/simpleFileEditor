@@ -1,16 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { fileTreeData, filesData } from "./mocks/dataMocks"
-
-
-// add custom jest matchers from jest-dom
+import { fileTreeData } from "../mocks/dataMocks"
 import '@testing-library/jest-dom/extend-expect'
 // the component to test
+import FileTreeView from './FileTreeView';
 
-import FileTreeView from './components/FileTreeView';
-
+// simple example test
 test('renders file tree with fetched data', () => {
-
   const { getByText } = render(<FileTreeView files={fileTreeData}/>);
   const linkElement = getByText("editor");
   expect(linkElement).toBeInTheDocument();

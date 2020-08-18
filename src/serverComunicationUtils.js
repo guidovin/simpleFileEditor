@@ -58,7 +58,7 @@ async function saveFile(file) {
 async function deleteFile(fileId){
   try {
     const response = await axios({
-      method:"put",
+      method:"delete",
       url:`https://my-json-server.typicode.com/open-veezoo/editor/files/${fileId}`,
       headers:{
         "Accept":"application/json",
@@ -66,8 +66,13 @@ async function deleteFile(fileId){
       },
     });
     console.log(response, "res delete")
-    if(response.status === 200 && this.state.clientSideDeletion) {
-      this.lazyDeleteFile(fileId);
+    if(response.status === 200){
+      if(this.state.clientSideDeletion)
+        this.lazyDeleteFile(fileId);
+      else 
+        //this does not update the rendered files because the server discard changes, 
+        //but if it did the function would fetch the updated files from the back and set them
+        this.getFileTree();
     }
   }
   catch(error){
