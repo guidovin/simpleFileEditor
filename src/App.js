@@ -1,7 +1,7 @@
 import React from 'react';
-import FileTreeView from './components/FileTreeView';
+import FileTreeView from './components/FileTreeView/FileTreeView';
 import { fileTreeData, filesData } from "./mocks/dataMocks"
-import CustomTextEditor from './components/CustomTextEditor';
+import CustomTextEditor from './components/CustomTextEditor/CustomTextEditor';
 import { withStyles } from '@material-ui/core';
 import { getFileTree, saveFile, deleteFile } from "./serverComunicationUtils";
 
