@@ -17,6 +17,11 @@ const classes = {
   }
 }
 
+//I chose to use classes / setState instead of functional components with hooks (useState, etc...). 
+//The reason being that I wanted easier access to life cycle functions such as shouldComponentUpdate and componentDidUpdate / Mount,
+//adding many data handling methods in functional components can get more desorganized/burocratic (creating unrelated functions and passing props around),
+//and performance-wise there aren't any specific optmizations implemented for functional components yet (although the React team stated there would be in future releases).
+//I made sure, however, to implement some examples of their usage (at textEditor component) and some of the more advanced features such as emulating life cycle functions with useEffect
 class App extends React.Component {
   constructor(props) {
     super(props);

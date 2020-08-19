@@ -1,5 +1,11 @@
 import axios from "axios";
 
+// These functions are context dependant and not fully detached from the component in which they are used. 
+// They are separated for readability and organiation. 
+// A more robust implementation would not rely on the binding of the component context (bind(this)) and instead pass the state, 
+// props, and setStates required as function params. 
+// With that said, I believe this falls beyond the scope of this project as they will not be used anywhere else
+
 // this function is unnecessary for the purpuses of this test, I'm leaving it here just as an example 
 async function getSingleFile(){
   const openId = this.state.openId ? this.state.openId : 0;
