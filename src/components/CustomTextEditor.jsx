@@ -49,11 +49,14 @@ const customEditorClasses = {
     fontSize: "calc(6px + 1vw)",
     color:"white"
   },
-  deletionSwitch: {
-    marginLeft: "auto" 
-  },
   toolbar: {
     border: "1px solid #5a5d5f",
+  },
+  switchWrapper: {
+    display:"flex",
+    flexDirection:"column",
+    justifyContent: "center",
+    marginLeft: "auto",
   }
 };
 
@@ -64,12 +67,14 @@ const toolbar = {
   },
 }
 
-const onDelete = ({ file, deleteFile } ) => {
-  if(file && deleteFile)
+const onDelete = ({ file, deleteFile, setEditorState }) => {
+  if(file && deleteFile){
     deleteFile(file.id)
+    setEditorState(EditorState.createEmpty());
+  }
 }
 
-function onSave(editorState, { file , saveFile }){
+function onSave({editorState,  file , saveFile }){
   const newFileContent = JSON.stringify(editorState.getCurrentContent().getPlainText());
   if(file && saveFile){
     const { id, name } = file;
@@ -78,12 +83,51 @@ function onSave(editorState, { file , saveFile }){
 }
 
 const toggleClientSideDeletionTooltip = 
-  "toggles client-side deletion to simulate back-end deletion, still calls deletion API but triggers re-render of fileTree on file deletion";
+  "toggles client-side deletion to simulate back-end deletion, still calls deletion API but triggers re-render of fileTree on file deletion. Default is ON";
 
 
-function CustomTextEditor({ classes, file, toggleClientDeletion, clientSideDeletion, deleteFile, saveFile }) {
+function EditorHeader({ classes, file, toggleClientDeletion, clientSideDeletion, deleteFile, saveFile, editorState, setEditorState }){
+  //more hooks examples
+  const [ switchSize , setSwitchSize] = React.useState("medium");
+  useEffect(() => {
+    function handleResize() {
+      if(window.innerHeight <= 650 && switchSize !== "small")
+        setSwitchSize("small");
+      if(window.innerHeight > 650 && switchSize !== "medium")
+        setSwitchSize("medium");
+    }
+    window.addEventListener('resize', handleResize);
+  });
+
+  return(
+    <div id="editorHeader" className={classes.header} >
+        <Button onClick={() => onSave({ editorState,  file , saveFile })} classes={{ root:classes.headerBtnRoot, label: classes.btnLabel }}>
+          <Save/> 
+        </Button>
+        <Button onClick={() => onDelete({ file, deleteFile, setEditorState })} classes={{ root:classes.headerBtnRoot, label: classes.btnLabel }}>
+          <Delete/>
+        </Button>
+        {file && <span className={classes.documentTitle}>{file.name}</span>}
+        <Tooltip title={toggleClientSideDeletionTooltip}>
+          <div className={classes.switchWrapper}> 
+            <Switch
+              size={switchSize}
+              checked={clientSideDeletion}
+              onChange={() => toggleClientDeletion()}
+              name="checkedA"
+              inputProps={{ 'aria-label': 'secondary checkbox' }}
+            />
+          </div>
+        </Tooltip>
+      </div>
+  );
+}
+
+//implementation with functional components to showcase some hook usage
+function CustomTextEditor(props) {
+  const { classes, file } = props;
   const [ editorState, setEditorState ] = React.useState(EditorState.createEmpty());
-
+  
   useEffect(() => {
     if(file && file.content)
       setEditorState(EditorState.createWithContent(ContentState.createFromText(file.content)));
@@ -91,24 +135,7 @@ function CustomTextEditor({ classes, file, toggleClientDeletion, clientSideDelet
 
   return (
     <div id="textEditorRoot" className={classes.root}>
-      <div id="editorHeader" className={classes.header} >
-        <Button onClick={() => onSave(editorState, { file , saveFile })} classes={{ root:classes.headerBtnRoot, label: classes.btnLabel }}>
-          <Save/> 
-        </Button>
-        <Button onClick={() => onDelete({ file, deleteFile })} classes={{ root:classes.headerBtnRoot, label: classes.btnLabel }}>
-          <Delete/>
-        </Button>
-        {file && <span className={classes.documentTitle}>{file.name}</span>}
-        <Tooltip title={toggleClientSideDeletionTooltip}>
-          <Switch
-            classes={{ root: classes.deletionSwitch }}
-            checked={clientSideDeletion}
-            onChange={() => toggleClientDeletion()}
-            name="checkedA"
-            inputProps={{ 'aria-label': 'secondary checkbox' }}
-          />
-        </Tooltip>
-      </div>
+      <EditorHeader editorState={editorState} setEditorState={setEditorState} {...props}/>
       <div id="editorWrapper" >
         <Editor
           toolbarClassName={classes.toolbar}
@@ -124,86 +151,3 @@ function CustomTextEditor({ classes, file, toggleClientDeletion, clientSideDelet
 }
 
 export default withStyles(customEditorClasses)(CustomTextEditor);
-
-
-// class CustomTextEditor extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       editorState: EditorState.createEmpty(),
-//     };
-//   }
-
-
-//   onEditorStateChange = (editorState) => {
-//     this.setState({
-//       editorState,
-//     });
-//   };
-
-
-//   onDelete = () => {
-//     if(this.props.file && this.props.deleteFile)
-//       this.props.deleteFile(this.props.file.id)
-//   }
-
-//   onSave(editorState){
-//     const newFileContent = JSON.stringify(editorState.getCurrentContent().getPlainText());
-//     if(this.props.file && this.props.saveFile){
-//       const { id, name } = this.props.file;
-//       this.props.saveFile({ id, name, content:newFileContent})
-//     }
-//   }
-
-//   componentDidUpdate( prevProps ){
-//     if(!this.props.file)
-//       return null;
-
-//     if(!prevProps.file || prevProps.file.id !== this.props.file.id)
-//       this.setState({ 
-//         editorState: EditorState.createWithContent(ContentState.createFromText(this.props.file.content))
-//       });
-//   }
-
-//   render() {
-//     const { editorState } = this.state;
-//     const { classes, file } = this.props;
-//     const toggleClientSideDeletionTooltip = 
-//       "toggles client-side deletion to simulate back-end deletion, still calls deletion API but triggers re-render of fileTree on file deletion";
-//     return (
-//       <div id="textEditorRoot" className={classes.root}>
-//         <div id="editorHeader" className={classes.header} >
-//           <Button onClick={() => this.onSave(editorState)} classes={{ root:classes.headerBtnRoot, label: classes.btnLabel }}>
-//             <Save/> 
-//           </Button>
-//           <Button onClick={() => this.onDelete(file.id)} classes={{ root:classes.headerBtnRoot, label: classes.btnLabel }}>
-//             <Delete/>
-//           </Button>
-//           {file && <span className={classes.documentTitle}>{file.name}</span>}
-//           <Tooltip title={toggleClientSideDeletionTooltip}>
-//             <Switch
-//               classes={{ root: classes.deletionSwitch }}
-//               checked={this.props.clientSideDeletion}
-//               onChange={() => this.props.toggleClientDeletion()}
-//               name="checkedA"
-//               inputProps={{ 'aria-label': 'secondary checkbox' }}
-//             />
-//           </Tooltip>
-//         </div>
-//         <div id="editorWrapper" >
-//           <Editor
-//             toolbarClassName={classes.toolbar}
-//             editorClassName={classes.editorBody}
-//             wrapperClassName={classes.editorWrapper}
-//             editorState={editorState}
-//             onEditorStateChange={(editorState) => {this.onEditorStateChange(editorState)}}
-//             toolbar={toolbar}
-//           />
-//         </div>
-//       </div>
-//     )
-//   }
-
-// }
-
-// export default withStyles(customEditorClasses)(CustomTextEditor);

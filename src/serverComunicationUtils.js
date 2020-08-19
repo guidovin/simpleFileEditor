@@ -70,7 +70,7 @@ async function deleteFile(fileId){
       if(this.state.clientSideDeletion)
         this.lazyDeleteFile(fileId);
       else 
-        //this does not update the rendered files because the server discard changes, 
+        //this does not update the rendered files because the server discards changes, 
         //but if it did the function would fetch the updated files from the back and set them
         this.getFileTree();
     }

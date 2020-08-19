@@ -22,7 +22,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       openId: "",
-      clientSideDeletion:false
+      clientSideDeletion:true
     }
     this.saveFile = saveFile.bind(this); 
     this.getFileTree = getFileTree.bind(this); 
